@@ -49,12 +49,16 @@ fn partition(array: &mut Vec<String>, low: usize, high: usize) -> usize {
 }
 
 fn quick_sort(array: &mut Vec<String>, low: usize, high: usize) {
-	if high - low < 2 { // If only one element is given return with no modifications
+	if high - low < 1 { // If only one element is given return with no modifications
 		return;
 	}
 
 	let p = partition(array, low, high);
 	// Recursively sort the two halves
-	quick_sort(array, low, p);
-	quick_sort(array, p + 1, high);
+	if p > 0 {
+		quick_sort(array, low, p);
+	}
+	if p < high {
+		quick_sort(array, p + 1, high);
+	}
 }
