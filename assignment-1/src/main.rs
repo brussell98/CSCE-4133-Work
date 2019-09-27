@@ -6,6 +6,6 @@ mod distribute;
 
 fn main() {
 	let time = Instant::now();
-	distribute::main();
+	merge::main();
 	println!("Execution took {:?}", time.elapsed());
 }
