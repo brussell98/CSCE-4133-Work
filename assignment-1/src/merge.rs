@@ -1,6 +1,5 @@
 use std::io;
 use std::io::BufRead;
-use std::iter::FromIterator;
 
 pub fn main() {
 	let stdin = io::stdin();

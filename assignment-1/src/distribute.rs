@@ -67,9 +67,10 @@ fn test_candies(candies: &u64, persons: &usize, boxes: &mut Vec<u64>) -> bool {
 		if boxes[b] >= *candies {
 			// Optimize by taking out for as many people as possible
 			persons_left -= (boxes[b] / *candies) as i64;
-			boxes[b] = 0;
-		} else if b > 0 { // If box doesn't have enough skip it
-			b -= 1;
+			boxes[b] = 0; // Empty the box and advance to next one
+			if b > 0 {
+				b -= 1;
+			}
 		} else { // If no more boxes return impossible
 			return false;
 		}

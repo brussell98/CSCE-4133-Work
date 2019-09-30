@@ -56,9 +56,31 @@ fn quick_sort(array: &mut Vec<String>, low: usize, high: usize) {
 	let p = partition(array, low, high);
 	// Recursively sort the two halves
 	if p > 0 {
-		quick_sort(array, low, p);
+		if p - low <= 10 {
+			insertion_sort(array, low, p);
+		} else {
+			quick_sort(array, low, p);
+		}
 	}
 	if p < high {
-		quick_sort(array, p + 1, high);
+		if high - p <= 10 {
+			insertion_sort(array, p + 1, high);
+		} else {
+			quick_sort(array, p + 1, high);
+		}
+	}
+}
+
+fn insertion_sort(array: &mut Vec<String>, low: usize, high: usize) {
+	// Iterate up the array sorting elements one by one
+	let mut i = low + 1;
+	while i <= high {
+		let mut k = i;
+		// While the previous element is larger, swap them and check the next previous
+		while k > 0 && array[k - 1] > array[k] {
+			array.swap(k, k - 1);
+			k -= 1;
+		}
+		i += 1;
 	}
 }
