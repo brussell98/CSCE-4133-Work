@@ -40,12 +40,14 @@ impl Heap {
 		i * 2 + if left { 1 } else { 2 }
 	}
 	fn heapify(&mut self) {
+		let length = self.array.len() - 1; // Fix borrow error caused by outdated rust compiler on spoj
 		let mut start = Heap::parent_of(self.array.len() - 1);
 		loop {
-			self.sift_down(start, self.array.len() - 1);
+			self.sift_down(start, length);
 			if start == 0 {
 				return;
 			}
+			start -= 1;
 		}
 	}
 	fn sift_down(&mut self, start: usize, end: usize) {
