@@ -8,23 +8,55 @@ pub fn main() {
 	lines.remove(0); // First input is useless to me
 
 	while lines.len() > 0 { // While there are more test cases
-		let length = lines[0].parse::<i32>().unwrap() as usize; // Parse first line for number of words
-		lines.remove(0); // Remove it from the vector
+		// Parse input N and C ([0] = stalls, [1] = cows)
+		let inputs: Vec<usize> = lines.remove(0).split_whitespace().map(|n| n.parse::<usize>().unwrap()).collect();
+		let stalls = inputs[0];
+		let cows = inputs[1];
 
-		// Remove this test case's words
-		let words: Vec<String> = lines.drain(..length).collect();
+		// Get the stall positions
+		let positions: Vec<usize> = lines.drain(..stalls).map(|s| s.parse::<usize>().unwrap()).collect();
 
-		// Heap sort the words
-		let mut word_heap = Heap::new(words);
-		word_heap.sort();
-		for word in word_heap.array {
-			println!("{}", word);
+		// Heap sort the stall positions
+		let mut stall_heap = Heap::new(positions);
+		stall_heap.sort();
+
+		let mut low: usize = 0;
+		let mut high: usize = stall_heap.array.last().unwrap() - stall_heap.array[0] + 1;
+		let mut answer = 0;
+		while low < high {
+			let mid = (low + high) / 2;
+			if distance_is_possible(&mid, &cows, &stall_heap.array) {
+				answer = mid;
+				low = mid + 1;
+			} else {
+				high = mid;
+			}
 		}
+
+		println!("{}", answer);
 	}
 }
 
+fn distance_is_possible(dist: &usize, cows: &usize, positions: &Vec<usize>) -> bool {
+	let mut cows_remain = *cows - 1;
+	let mut current_min = positions[0] + *dist;
+
+	for i in 1..positions.len() {
+		if positions[i] >= current_min {
+			cows_remain -= 1;
+			current_min = positions[i] + *dist;
+		}
+
+		if cows_remain == 0 {
+			return true;
+		}
+	}
+
+	false
+}
+
 struct Heap {
-	array: Vec<String>
+	array: Vec<usize>
 }
 
 // Array-based max heap (read top to bottom, left to right)
@@ -34,7 +66,7 @@ struct Heap {
 // Children are index * 2 + (1 or 2)
 // Parent is (index - 1) / 2
 impl Heap {
-	fn new(array: Vec<String>) -> Heap {
+	fn new(array: Vec<usize>) -> Heap {
 		Heap {
 			array
 		}
