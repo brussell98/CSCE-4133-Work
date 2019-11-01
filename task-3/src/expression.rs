@@ -1,11 +1,11 @@
 use std::io;
 use std::io::BufRead;
 
-// Generic runner
+/// Evaluate the expressions given through stdin
 pub fn main() {
 	let stdin = io::stdin();
 	// Vector of stdin lines
-	let mut lines: Vec<String> = stdin.lock().lines().map(|el| el.unwrap()).collect();
+	let lines: Vec<String> = stdin.lock().lines().map(|el| el.unwrap()).collect();
 
 	for line in lines { // While there are more test cases
 		let mut exp = Expression::new(line);
@@ -17,7 +17,7 @@ pub fn main() {
 #[derive(PartialEq, Clone, Debug)]
 enum TokenType { Int, Op, Open, Close }
 
-// Represents a number, operator, or parenthesis
+/// Represents a number, operator, or parenthesis as part of an expression
 #[derive(Clone, Debug)]
 struct Token {
 	t_type: TokenType,
@@ -54,6 +54,7 @@ impl Token {
 	}
 }
 
+/// A simple math expression with irregular operator precedence. Can not be updated after calling evaluate()
 struct Expression {
 	tokenized: Vec<Token>, // The tokens in the order they appear
 	postfix: Vec<Token>, // A "stack" of the tokens in postfix order
@@ -90,7 +91,7 @@ impl Expression {
 		exp
 	}
 
-	// Put the tokens in postfix order for evaluation
+	/// Build a postfix order vector of the tokenized expression
 	fn build_postfix(&mut self) {
 		let mut op_stack = Vec::new();
 
@@ -118,6 +119,7 @@ impl Expression {
 		}
 	}
 
+	/// Evaluate the expression using the postfix order, and store the result
 	fn evaluate(&mut self) -> i32 {
 		if self.value.is_some() {
 			return self.value.unwrap();
