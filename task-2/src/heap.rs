@@ -27,7 +27,7 @@ struct Heap {
 	array: Vec<String>
 }
 
-// Array-based max heap (read top to bottom, left to right)
+// Array-based heap
 //                 v  v children at 5 and 6
 // [1, 2, 3, 4, 5, 6, 7, 8]
 //        ^ parent at 2
@@ -45,7 +45,7 @@ impl Heap {
 	fn child_of(i: usize, left: bool) -> usize {
 		i * 2 + if left { 1 } else { 2 }
 	}
-	// Bottom up heapify
+	// Build a heap in-place from an unsorted tree
 	fn heapify(&mut self) {
 		let length = self.array.len() - 1;
 		let mut start = Heap::parent_of(length); // Start at last tree
@@ -57,40 +57,40 @@ impl Heap {
 			start -= 1;
 		}
 	}
-	// Make sure the tree is a max heap by moving the root node down if needed
+	// Make sure the tree is a max heap by moving the root node down if smaller than its children
 	fn sift_down(&mut self, start: usize, end: usize) {
 		let mut root = start;
 		let mut child = Heap::child_of(root, true);
 
-		while child <= end {
-			// Node to swap to
-			let mut swap = root;
+		while child <= end { // While the current node has child nodes
+			let mut swap = root; // Larger node to swap with
 
 			if self.array[swap] < self.array[child] { // If left child is greater, swap with it
 				swap = child;
 			}
-			if child + 1 <= end && self.array[swap] < self.array[child + 1] { // If right child exists and  is greatest swap with it
+			if child + 1 <= end && self.array[swap] < self.array[child + 1] { // If right child exists and is greatest swap with it
 				swap = child + 1;
 			}
 
-			if swap == root { // If both children are smaller it is a max heap
+			if swap == root { // If both children are smaller it is a max heap. They are known heaps because bottom-up so exit.
 				return;
-			} else { // Move the larger node up and continue down the tree
+			} else { // Move the larger node up and continue down the tree form where the root was swapped to
 				self.array.swap(root, swap);
 				root = swap;
 			}
 
-			child = Heap::child_of(root, true);
+			child = Heap::child_of(root, true); // Update the child index
 		}
 	}
 	fn sort(&mut self) {
 		self.heapify(); // Make sure the the max heap conditions are satisfied
 
+		// Pop the top of the heap until the array is sorted
 		let mut end = self.array.len() - 1;
 		while end > 0 { // Swap the root (greatest) element to the end, and sift the swapped element down to rebuild the heap
 			self.array.swap(end, 0);
 			end -= 1; // Exclude the sorted element
-			self.sift_down(0, end);
+			self.sift_down(0, end); // Bring the largest node to the top
 		}
 	}
 }

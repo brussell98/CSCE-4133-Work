@@ -20,6 +20,7 @@ pub fn main() {
 		let mut stall_heap = Heap::new(positions);
 		stall_heap.sort();
 
+		// Binary search between lowest and highest possible distance
 		let mut low: usize = 0;
 		let mut high: usize = stall_heap.array.last().unwrap() - stall_heap.array[0] + 1;
 		let mut answer = 0;
@@ -38,16 +39,18 @@ pub fn main() {
 }
 
 fn distance_is_possible(dist: &usize, cows: &usize, positions: &Vec<usize>) -> bool {
+	// Auto-fill the first stall
 	let mut cows_remain = *cows - 1;
 	let mut current_min = positions[0] + *dist;
 
+	// Search through every stall and see if the distance is far enough to place a cow there
 	for i in 1..positions.len() {
 		if positions[i] >= current_min {
 			cows_remain -= 1;
 			current_min = positions[i] + *dist;
 		}
 
-		if cows_remain == 0 {
+		if cows_remain == 0 { // If all cows are placed the it is possible
 			return true;
 		}
 	}
