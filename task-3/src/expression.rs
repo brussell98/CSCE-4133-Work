@@ -129,7 +129,7 @@ impl Expression {
 
 		let mut operands = Vec::new(); // A stack of numbers
 
-		for token in self.postfix.clone() {
+		for token in self.postfix.iter() {
 			if token.t_type == TokenType::Int {
 				operands.push(token.value.unwrap());
 			} else {

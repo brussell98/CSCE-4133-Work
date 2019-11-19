@@ -20,6 +20,7 @@ pub fn main() {
 	let mut queries = Vec::with_capacity(qs);
 	let mut i = 0;
 	// Switched from removing element 0 to using an iterator, vastly increasing speed (it used all the time before even finishing taking in stdin)
+	// Wasted most of my Thursday trying to figure out what was causing it
 	for line in lines[3..].iter() {
 		// Parse start and end
 		let inputs: Vec<usize> = line.split_whitespace().map(|n| n.parse::<usize>().unwrap()).collect();
@@ -74,7 +75,7 @@ fn query_bit(index: usize, bit: &Vec<i32>) -> i32 {
 	sum
 }
 
-/// Given a sequence on numbers, and a right-bound sorted query set, find the number of distinct elements for each query
+/// Given a sequence of numbers, and a right-bound sorted query set, find the number of distinct elements for each query
 fn answer_queries(seq: Vec<usize>, queries: Vec<[usize; 3]>) {
 	// let time1 = Instant::now();
 	// Stores the last index a number was seen at, or -1
@@ -88,12 +89,12 @@ fn answer_queries(seq: Vec<usize>, queries: Vec<[usize; 3]>) {
 	// Build a BIT storing the last index of each distinct element
 	for i in 0..seq.len() {
 		// If the current element has occurred before, subtract one from it's last index
-		let el = seq[i] as usize;
-		if last_index[el] != -1 {
-			update_bit(last_index[el] as usize + 1, -1, &mut bit);
+		let el = &seq[i];
+		if last_index[*el as usize] != -1 {
+			update_bit(last_index[*el as usize] as usize + 1, -1, &mut bit);
 		}
 
-		last_index[el] = i as i32; // Set last index for the number to this index
+		last_index[*el as usize] = i as i32; // Set last index for the number to this index
 		update_bit(i + 1, 1, &mut bit); // Add 1, marking the last position as i
 
 		// If there is a query to answer where left is the current index
